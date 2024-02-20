@@ -1,7 +1,7 @@
 'use client';
 
 import { ElementRef, useEffect, useRef, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import { api } from '@/convex/_generated/api';
@@ -16,9 +16,13 @@ import { DocumentList } from './DocumentList';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { TrashBox } from './TrashBox';
 import { useSearch } from '@/hooks/useSearch';
+import { useSettings } from '@/hooks/useSetting';
+import { Navbar } from './Navbar';
 
 const Navigation = () => {
   const search = useSearch();
+  const settings = useSettings();
+  const params = useParams();
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const create = useMutation(api.documents.create);
@@ -129,7 +133,7 @@ const Navigation = () => {
         <div>
           <UserItem />
           <Item label='Search' icon={Search} isSearch onClick={search.onOpen} />
-          <Item label='Setting' icon={Settings} onClick={() => {}} />
+          <Item label='Setting' icon={Settings} onClick={settings.onOpen} />
           <Item onClick={handleCreate} label='New page' icon={PlusIcon} />
         </div>
         <div className='mt-4'>
@@ -158,14 +162,18 @@ const Navigation = () => {
           isMobile && 'left-0 w-full'
         )}
       >
-        <nav className='bg-transparent px-3 py-2 w-full'>
-          {isCollapsed && (
-            <MenuIcon
-              onClick={resetWidth}
-              className='h-6 w-6 text-muted-foreground cursor-pointer'
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className='bg-transparent px-3 py-2 w-full'>
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                className='h-6 w-6 text-muted-foreground cursor-pointer'
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
