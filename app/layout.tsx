@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={`${inter.className} h-screen`}>
+      <body className={`${inter.className} h-screen overflow-hidden`}>
         <ConvexClientProvide>
           <EdgeStoreProvider>
             <ThemeProvider
